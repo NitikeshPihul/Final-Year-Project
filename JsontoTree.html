@@ -174,8 +174,6 @@
 </body>
 </html>
 
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -214,14 +212,20 @@
     // Fetch JSON data from file
     fetch('data.json')
       .then(function(response) {
+        if (!response.ok) {
+          throw new Error('Failed to fetch JSON data');
+        }
         return response.json();
       })
       .then(function(jsonData) {
+        if (!Array.isArray(jsonData)) {
+          throw new Error('Invalid JSON data');
+        }
         // Build the tree
-        buildTree(jsonData.children, treeContainer);
+        buildTree(jsonData, treeContainer);
       })
       .catch(function(error) {
-        console.log('Error fetching JSON data:', error);
+        console.log('Error fetching or parsing JSON data:', error);
       });
   </script>
 </body>
