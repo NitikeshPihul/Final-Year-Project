@@ -49,3 +49,128 @@
   </script>
 </body>
 </html>
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON to Tree</title>
+  <style>
+    .tree {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+    .tree ul {
+      padding-top: 20px;
+      position: relative;
+      padding-left: 20px;
+      display: block;
+      white-space: nowrap;
+    }
+    .tree li {
+      list-style-type: none;
+      margin: 0;
+      padding: 10px 5px 0 5px;
+      position: relative;
+    }
+    .tree li::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      border-left: 1px solid #ccc;
+      left: -20px;
+    }
+    .tree li::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 20px;
+      height: 10px;
+      border-top: 1px solid #ccc;
+      left: -20px;
+    }
+    .tree li:last-child::before {
+      height: 10px;
+    }
+    .tree li:last-child::after {
+      display: none;
+    }
+    .tree li::before, .tree li::after {
+      border-color: #ccc;
+    }
+    .tree li span {
+      padding: 5px;
+      border-radius: 5px;
+      background-color: #f2f2f2;
+      display: inline-block;
+    }
+    .tree li span:hover {
+      background-color: #e2e2e2;
+    }
+  </style>
+</head>
+<body>
+  <div id="treeContainer"></div>
+
+  <script>
+    // Sample JSON data
+    var jsonData = {
+      "id": 1,
+      "name": "Root",
+      "children": [
+        {
+          "id": 2,
+          "name": "Child 1",
+          "children": [
+            {
+              "id": 3,
+              "name": "Grandchild 1",
+              "children": []
+            },
+            {
+              "id": 4,
+              "name": "Grandchild 2",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Child 2",
+          "children": []
+        }
+      ]
+    };
+
+    // Function to recursively build the tree
+    function buildTree(data, container) {
+      var ul = document.createElement("ul");
+      container.appendChild(ul);
+
+      data.forEach(function (item) {
+        var li = document.createElement("li");
+        ul.appendChild(li);
+
+        var span = document.createElement("span");
+        span.innerText = item.name;
+        li.appendChild(span);
+
+        if (item.children.length > 0) {
+          buildTree(item.children, li);
+        }
+      });
+    }
+
+    // Get the container element
+    var treeContainer = document.getElementById("treeContainer");
+
+    // Build the tree
+    buildTree([jsonData], treeContainer);
+  </script>
+</body>
+</html>
+
