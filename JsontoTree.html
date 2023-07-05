@@ -1,1 +1,51 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON to Tree</title>
+  <style>
+    /* CSS styles for the tree structure */
+    /* ... CSS styles from the previous code snippet ... */
+  </style>
+</head>
+<body>
+  <div id="treeContainer"></div>
+
+  <script>
+    // Function to recursively build the tree
+    function buildTree(data, container) {
+      var ul = document.createElement("ul");
+      container.appendChild(ul);
+
+      data.forEach(function (item) {
+        var li = document.createElement("li");
+        ul.appendChild(li);
+
+        var span = document.createElement("span");
+        span.innerText = item.name;
+        li.appendChild(span);
+
+        if (item.children.length > 0) {
+          buildTree(item.children, li);
+        }
+      });
+    }
+
+    // Get the container element
+    var treeContainer = document.getElementById("treeContainer");
+
+    // Fetch JSON data from file
+    fetch('data.json')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(jsonData) {
+        // Build the tree
+        buildTree([jsonData], treeContainer);
+      })
+      .catch(function(error) {
+        console.log('Error fetching JSON data:', error);
+      });
+  </script>
+</body>
+</html>
