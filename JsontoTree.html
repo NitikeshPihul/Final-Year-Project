@@ -1,234 +1,35 @@
-
-<!DOCTYPE html>
-<html>
-<head>
-  <title>JSON to Tree</title>
-  <style>
-    /* CSS styles for the tree structure */
-    /* ... CSS styles from the previous code snippet ... */
-  </style>
-</head>
-<body>
-  <div id="treeContainer"></div>
-
-  <script>
-    // Function to recursively build the tree
-    function buildTree(data, container) {
-      var ul = document.createElement("ul");
-      container.appendChild(ul);
-
-      data.forEach(function (item) {
-        var li = document.createElement("li");
-        ul.appendChild(li);
-
-        var span = document.createElement("span");
-        span.innerText = item.name;
-        li.appendChild(span);
-
-        if (item.children.length > 0) {
-          buildTree(item.children, li);
-        }
-      });
-    }
-
-    // Get the container element
-    var treeContainer = document.getElementById("treeContainer");
-
-    // Fetch JSON data from file
-    fetch('data.json')
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(jsonData) {
-        // Build the tree
-        buildTree([jsonData], treeContainer);
-      })
-      .catch(function(error) {
-        console.log('Error fetching JSON data:', error);
-      });
-  </script>
-</body>
-</html>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
 
 
 
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>JSON to Tree</title>
-  <style>
-    .tree {
-      margin-left: 20px;
-      margin-top: 10px;
-    }
-    .tree ul {
-      padding-top: 20px;
-      position: relative;
-      padding-left: 20px;
-      display: block;
-      white-space: nowrap;
-    }
-    .tree li {
-      list-style-type: none;
-      margin: 0;
-      padding: 10px 5px 0 5px;
-      position: relative;
-    }
-    .tree li::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 1px;
-      height: 100%;
-      border-left: 1px solid #ccc;
-      left: -20px;
-    }
-    .tree li::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 20px;
-      height: 10px;
-      border-top: 1px solid #ccc;
-      left: -20px;
-    }
-    .tree li:last-child::before {
-      height: 10px;
-    }
-    .tree li:last-child::after {
-      display: none;
-    }
-    .tree li::before, .tree li::after {
-      border-color: #ccc;
-    }
-    .tree li span {
-      padding: 5px;
-      border-radius: 5px;
-      background-color: #f2f2f2;
-      display: inline-block;
-    }
-    .tree li span:hover {
-      background-color: #e2e2e2;
-    }
-  </style>
-</head>
-<body>
-  <div id="treeContainer"></div>
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-  <script>
-    // Sample JSON data
-    var jsonData = {
-      "id": 1,
-      "name": "Root",
-      "children": [
-        {
-          "id": 2,
-          "name": "Child 1",
-          "children": [
-            {
-              "id": 3,
-              "name": "Grandchild 1",
-              "children": []
-            },
-            {
-              "id": 4,
-              "name": "Grandchild 2",
-              "children": []
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Child 2",
-          "children": []
-        }
-      ]
-    };
+String templatePath = "path/to/template.html";
+String outputFilePath = "path/to/output.html";
 
-    // Function to recursively build the tree
-    function buildTree(data, container) {
-      var ul = document.createElement("ul");
-      container.appendChild(ul);
+// Create a template resolver
+FileTemplateResolver templateResolver = new FileTemplateResolver();
+templateResolver.setTemplateMode(TemplateMode.HTML);
+templateResolver.setCharacterEncoding("UTF-8");
 
-      data.forEach(function (item) {
-        var li = document.createElement("li");
-        ul.appendChild(li);
+// Create a template engine
+TemplateEngine templateEngine = new TemplateEngine();
+templateEngine.setTemplateResolver(templateResolver);
 
-        var span = document.createElement("span");
-        span.innerText = item.name;
-        li.appendChild(span);
+// Create a Thymeleaf context with the dynamic variables
+Context context = new Context();
+context.setVariable("title", "My Custom Title");
+context.setVariable("message", "Hello, World!");
 
-        if (item.children.length > 0) {
-          buildTree(item.children, li);
-        }
-      });
-    }
+// Process the template with the context
+String output = templateEngine.process(templatePath, context);
 
-    // Get the container element
-    var treeContainer = document.getElementById("treeContainer");
-
-    // Build the tree
-    buildTree([jsonData], treeContainer);
-  </script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html>
-<head>
-  <title>JSON to Tree</title>
-  <style>
-    /* CSS styles for the tree structure */
-    /* ... CSS styles from the previous code snippet ... */
-  </style>
-</head>
-<body>
-  <div id="treeContainer"></div>
-
-  <script>
-    // Function to recursively build the tree
-    function buildTree(data, container) {
-      var ul = document.createElement("ul");
-      container.appendChild(ul);
-
-      data.forEach(function (item) {
-        var li = document.createElement("li");
-        ul.appendChild(li);
-
-        var span = document.createElement("span");
-        span.innerText = item.name;
-        li.appendChild(span);
-
-        if (item.children && item.children.length > 0) {
-          buildTree(item.children, li);
-        }
-      });
-    }
-
-    // Get the container element
-    var treeContainer = document.getElementById("treeContainer");
-
-    // Fetch JSON data from file
-    fetch('data.json')
-      .then(function(response) {
-        if (!response.ok) {
-          throw new Error('Failed to fetch JSON data');
-        }
-        return response.json();
-      })
-      .then(function(jsonData) {
-        if (!Array.isArray(jsonData)) {
-          throw new Error('Invalid JSON data');
-        }
-        // Build the tree
-        buildTree(jsonData, treeContainer);
-      })
-      .catch(function(error) {
-        console.log('Error fetching or parsing JSON data:', error);
-      });
-  </script>
-</body>
-</html>
-
-
+// Write the processed template to a new HTML file
+Files.write(Paths.get(outputFilePath), output.getBytes());
