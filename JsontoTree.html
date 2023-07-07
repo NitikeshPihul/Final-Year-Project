@@ -136,3 +136,55 @@ Files.write(Paths.get(outputFilePath), output.getBytes());
     Replace templatePath with the path to your Thymeleaf template file, and outputFilePath with the desired path and filename for your new HTML file.
 
 By following these steps, you can replace the JSON data within the <script> tag dynamically using Thymeleaf and generate the modified HTML file.
+
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+public class FolderCopyExample {
+
+    public static void main(String[] args) {
+        String sourceFolderPath = "path/to/source/folder";
+        String destinationFolderPath = "path/to/destination/folder";
+
+        try {
+            copyFolder(new File(sourceFolderPath), new File(destinationFolderPath));
+            System.out.println("Folder copied successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void copyFolder(File sourceFolder, File destinationFolder) throws IOException {
+        // Create the destination folder if it doesn't exist
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdirs();
+        }
+
+        // Iterate over all files and subdirectories in the source folder
+        File[] files = sourceFolder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    // Recursive call to copy subdirectory
+                    String subdirectoryName = file.getName();
+                    File destinationSubdirectory = new File(destinationFolder, subdirectoryName);
+                    copyFolder(file, destinationSubdirectory);
+                } else {
+                    // Copy file to the destination folder
+                    String fileName = file.getName();
+                    Path sourceFilePath = file.toPath();
+                    Path destinationFilePath = new File(destinationFolder, fileName).toPath();
+                    Files.copy(sourceFilePath, destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
+    }
+            }
+            
+
+
+        
