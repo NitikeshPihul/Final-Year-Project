@@ -187,4 +187,47 @@ public class FolderCopyExample {
             
 
 
-        
+     import java.io.*;
+import java.net.URL;
+import java.nio.file.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Specify the path to the folder relative to the resources directory
+        String folderPath = "templates";
+
+        // Get the URL of the folder from the resources directory
+        URL folderUrl = Main.class.getClassLoader().getResource(folderPath);
+
+        if (folderUrl != null) {
+            try {
+                // Convert the URL to a file path
+                String folderFilePath = folderUrl.getPath();
+
+                // Create a Path object for the source folder
+                Path sourcePath = Paths.get(folderFilePath);
+
+                // Specify the destination path where the folder will be copied
+                String destinationPath = "path/to/destination/folder";
+
+                // Copy the folder's contents to the destination
+                Files.walk(sourcePath)
+                        .forEach(source -> {
+                            try {
+                                Path destination = Paths.get(destinationPath, sourcePath.relativize(source).toString());
+                                Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                System.out.println("Folder copied successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Folder not found: " + folderPath);
+        }
+    }
+                                    }
+                            
