@@ -155,3 +155,50 @@ public class Main {
         return fileNames;
     }
 }
+
+
+
+-------------------------------
+
+ import java.io.*;
+import java.nio.file.*;
+
+public class CopyFilesFromJarExample {
+
+    public static void main(String[] args) {
+        String jarFilePath = "path/to/your.jar";
+        String destinationFolderPath = "path/to/destination/folder";
+
+        copyFilesFromJar(jarFilePath, destinationFolderPath);
+    }
+
+    private static void copyFilesFromJar(String jarFilePath, String destinationFolderPath) {
+        try (InputStream jarStream = new FileInputStream(jarFilePath);
+             ZipInputStream zipStream = new ZipInputStream(jarStream)) {
+
+            ZipEntry entry;
+            while ((entry = zipStream.getNextEntry()) != null) {
+                if (!entry.isDirectory()) {
+                    String entryName = entry.getName();
+                    String destinationFilePath = destinationFolderPath + File.separator + entryName;
+
+                    try (OutputStream outputStream = new FileOutputStream(destinationFilePath)) {
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = zipStream.read(buffer)) > 0) {
+                            outputStream.write(buffer, 0, length);
+                        }
+                    }
+                }
+                zipStream.closeEntry();
+            }
+
+            System.out.println("Files successfully copied from JAR to the destination folder.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+    
