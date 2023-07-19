@@ -1,3 +1,19 @@
+
+$(document).ready(function() {
+    $('#printButton').click(function() {
+      // Convert webpage contents to PDF using a library like jsPDF
+      var doc = new jsPDF();
+      doc.fromHTML($('body').get(0), 10, 10, {
+        'width': 180
+      });
+
+      // Initiate download of the PDF file
+      doc.save('webpage.pdf');
+    });
+  });
+
+
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
