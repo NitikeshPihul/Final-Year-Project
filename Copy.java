@@ -1,4 +1,21 @@
 
+function changeTheme(themeName) {
+            const link = $('#theme');
+            link.attr('href', `${themeName}.css`);
+        }
+
+        // Add click event listeners to the theme links
+        $('#theme1-link').on('click', () => {
+            changeTheme('theme1');
+        });
+
+        $('#theme2-link').on('click', () => {
+            changeTheme('theme2');
+        });
+
+
+
+
 $(document).ready(function() {
     $('#printButton').click(function() {
       // Convert webpage contents to PDF using a library like jsPDF
