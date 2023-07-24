@@ -1,3 +1,63 @@
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+ <div id="graph-container"></div>
+<script>
+  $(document).ready(function () {
+    // Your JSON data (replace this with your actual data)
+    const jsonData = {
+      "name": "Root",
+      "children": [
+        { "name": "Child 1" },
+        { "name": "Child 2" },
+        // Add more children as needed
+      ]
+    };
+
+    // Create a hierarchical layout using D3.js tree layout
+    const root = d3.hierarchy(jsonData);
+    const treeLayout = d3.tree().size([500, 300]);
+    treeLayout(root);
+
+    // Create an SVG element within the graph container
+    const svg = d3.select("#graph-container")
+      .append("svg")
+      .attr("width", 600)
+      .attr("height", 400)
+      .append("g")
+      .attr("transform", "translate(50, 50)");
+
+    // Create links between nodes
+    const links = root.links();
+    svg.selectAll(".link")
+      .data(links)
+      .enter()
+      .append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x));
+
+    // Create nodes
+    const nodes = root.descendants();
+    const node = svg.selectAll(".node")
+      .data(nodes)
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.y},${d.x})`);
+
+    node.append("circle")
+      .attr("r", 4);
+
+    node.append("text")
+      .attr("dy", "0.31em")
+      .attr("x", d => d.children ? -8 : 8)
+      .attr("text-anchor", d => d.children ? "end" : "start")
+      .text(d => d.data.name);
+  });
+</script>
+            
+
 
 function changeTheme(themeName) {
             const link = $('#theme');
