@@ -1,3 +1,74 @@
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+class Module {
+    String name;
+    String value;
+    List<Module> children;
+
+    // Constructors, getters, setters, etc.
+}
+
+public class JsonToHtmlConverter {
+
+    private static int nodeId = 0;
+
+    public static void main(String[] args) {
+        String json = "[{\"name\":\"skava-framework-bom\",\"value\":\"8.13.7.RELEASE\",\"children\":[{\"name\":\"nuskin-account-plugin\",\"value\":\"1.1.0.RELEASE\"},{\"name\":\"nuskin-address-plugin\",\"value\":\"1.1.0.RELEASE\"},{\"name\":\"nuskin-loyalty-plugin\",\"value\":\"1.1.0.RELEASE\"},{\"name\":\"nuskin-ecommtax-plugin\",\"value\":\"1.1.0.RELEASE\"}]},{\"name\":\"skava-framework-bom\",\"value\":\"8.15.0.RELEASE\",\"children\":[{\"name\":\"loyaltyservices\",\"value\":\"8.15.0.RELEASE\"}]}]";
+
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Module>>(){}.getType();
+        List<Module> modules = gson.fromJson(json, listType);
+
+        StringBuilder htmlBuilder = new StringBuilder();
+        for (Module module : modules) {
+            generateHtml(module, null, htmlBuilder);
+        }
+
+        System.out.println(htmlBuilder.toString());
+    }
+
+    private static void generateHtml(Module module, String parent, StringBuilder htmlBuilder) {
+        int currentId = nodeId++;
+        String firstChild = null;
+        String nextSibling = null;
+
+        if (module.children != null && !module.children.isEmpty()) {
+            firstChild = String.valueOf(nodeId);
+        }
+
+        if (parent != null) {
+            nextSibling = String.valueOf(nodeId);
+        }
+
+        htmlBuilder.append("<div id=\"node_").append(currentId).append("\" class=\"window hidden\" data-id=\"")
+                .append(currentId).append("\" data-parent=\"").append(parent == null ? "" : parent)
+                .append("\" data-first-child=\"").append(firstChild == null ? "" : firstChild)
+                .append("\" data-next-sibling=\"").append(nextSibling == null ? "" : nextSibling)
+                .append("\">\n")
+                .append("  <div class=\"div-container\">\n")
+                .append("    <div class=\"module-name\">").append(module.name).append("</div>\n")
+                .append("    <div class=\"module-version\">").append(module.value).append("</div>\n")
+                .append("  </div>\n")
+                .append("</div>\n");
+
+        if (module.children != null) {
+            for (Module child : module.children) {
+                generateHtml(child, String.valueOf(currentId), htmlBuilder);
+            }
+        }
+    }
+}
+
+
+
+
+
 <script src="https://d3js.org/d3.v6.min.js"></script>
 
  <div id="graph-container"></div>
