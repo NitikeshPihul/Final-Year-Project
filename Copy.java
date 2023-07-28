@@ -1,3 +1,67 @@
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class JsonDataFetcher {
+    public static void main(String[] args) {
+        String url = "https://www.jsonsite.com"; // Replace this with the actual URL
+
+        try {
+            // Make an HTTP GET request
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("GET");
+
+            // Check if the response code indicates success
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                // Read the response data
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder responseData = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    responseData.append(line);
+                }
+                reader.close();
+
+                // Parse JSON data
+                JSONObject jsonObject = new JSONObject(responseData.toString());
+
+                // Now you have the JSON data as a JSONObject, and you can work with it.
+                // For example, you can access specific fields like this:
+                String name = jsonObject.getString("name");
+                int age = jsonObject.getInt("age");
+
+                // Or you can convert the whole JSONObject into a custom Java object if you have a corresponding class.
+
+                // For demonstration purposes, let's assume you have a Person class:
+                // class Person {
+                //    private String name;
+                //    private int age;
+                //    // Add getters and setters
+                // }
+
+                // To convert the JSONObject to a Person object:
+                // Person person = new Person();
+                // person.setName(jsonObject.getString("name"));
+                // person.setAge(jsonObject.getInt("age"));
+
+            } else {
+                System.out.println("HTTP Request failed with response code: " + connection.getResponseCode());
+            }
+
+            connection.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
