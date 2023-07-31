@@ -1,3 +1,52 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class JsPlumbTreeGenerator {
+    private int nodeId = 1;
+
+    public String generateJsPlumbTree(JSONObject jsonObject) {
+        StringBuilder htmlBuilder = new StringBuilder();
+        htmlBuilder.append("<div id=\"node_").append(nodeId).append("\" class=\"window hidden\"");
+        htmlBuilder.append("\n data-id=\"").append(nodeId).append("\"");
+        htmlBuilder.append("\n data-parent=\"0\"");
+        htmlBuilder.append("\n data-first-child=\"").append(nodeId + 1).append("\"");
+        htmlBuilder.append("\n data-next-sibling=\"\">");
+
+        htmlBuilder.append("\n <div class=\"module-name\">");
+        htmlBuilder.append("\n <div>").append(jsonObject.getString("json_element")).append("</div>");
+        htmlBuilder.append("\n </div>");
+
+        JSONArray children = jsonObject.optJSONArray("children");
+        if (children != null) {
+            for (int i = 0; i < children.length(); i++) {
+                JSONObject child = children.getJSONObject(i);
+                nodeId++;
+                htmlBuilder.append("\n").append(generateJsPlumbTree(child));
+            }
+        }
+
+        htmlBuilder.append("\n</div>");
+        return htmlBuilder.toString();
+    }
+
+    public static void main(String[] args) {
+        // Sample JSON data
+        String jsonData = "{\"json_element\": \"Root\",\"children\": [{\"json_element\": \"Child1\"},{\"json_element\": \"Child2\"}]}";
+
+        // Parse the JSON data
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        // Generate the jsPlumbtree HTML elements
+        JsPlumbTreeGenerator generator = new JsPlumbTreeGenerator();
+        String resultHtml = generator.generateJsPlumbTree(jsonObject);
+
+        // Print the result
+        System.out.println(resultHtml);
+    }
+}
+_-----------------------------
+
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
