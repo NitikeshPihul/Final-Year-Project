@@ -1,3 +1,39 @@
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import brave.Span;
+import brave.Tracer;
+
+@Component
+public class TraceInterceptor {
+
+    @Autowired
+    private Tracer tracer;
+
+    public Processor startTrace() {
+        return exchange -> {
+            Span span = tracer.nextSpan().name("Camel Route"); // Create a new span
+            span.start(); // Start the span
+            exchange.setProperty("tracer-span", span); // Store the span in the exchange
+        };
+    }
+
+    public Processor finishTrace() {
+        return exchange -> {
+            Span span = (Span) exchange.getProperty("tracer-span");
+            if (span != null) {
+                span.finish(); // Finish the span
+            }
+        };
+    }
+}
+
+
+
+--_-------------
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
