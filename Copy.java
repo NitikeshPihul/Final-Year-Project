@@ -1,3 +1,15 @@
+<!-- Use the custom interceptor to start and finish tracing for a route -->
+<route>
+    <from uri="direct:start"/>
+    <process ref="traceInterceptor.startTrace"/> <!-- Start tracing -->
+    <to uri="http:..."/> <!-- Your API call -->
+    <process ref="traceInterceptor.finishTrace"/> <!-- Finish tracing -->
+    <to uri="direct:end"/>
+</route>
+
+
+    
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
