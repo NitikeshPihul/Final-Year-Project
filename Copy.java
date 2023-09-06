@@ -1,3 +1,18 @@
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+
+public class LogResponseProcessor implements Processor {
+    @Override
+    public void process(Exchange exchange) throws Exception {
+        // Fetch the response body and log it
+        String responseBody = exchange.getMessage().getBody(String.class);
+        System.out.println("Received response: " + responseBody);
+    }
+}
+
+
+
+
 <!-- Use the custom interceptor to start and finish tracing for a route -->
 <route>
     <from uri="direct:start"/>
