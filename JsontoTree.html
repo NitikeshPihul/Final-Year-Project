@@ -1,3 +1,74 @@
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import java.io.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+@Mojo(name = "create-aggregated-zip")
+public class AggregatedZipMojo extends AbstractMojo {
+
+    public void execute() throws MojoExecutionException {
+        try {
+            // Execute the first Maven command
+            executeMavenCommand("mvn equinox-build:service-tree -f reactor-pom.xml");
+
+            // Execute the second Maven command
+            executeMavenCommand("mvn equinox-build:version-jhtree -f reactor-pom.xml");
+
+            // After the commands have executed, create a new zip containing the two generated zips
+            createAggregatedZip();
+        } catch (IOException | InterruptedException e) {
+            throw new MojoExecutionException("Error executing commands", e);
+        }
+    }
+
+    private void executeMavenCommand(String command) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
+        processBuilder.directory(new File(System.getProperty("user.dir"))); // Set the current directory
+        processBuilder.redirectErrorStream(true);
+
+        Process process = processBuilder.start();
+        process.waitFor();
+    }
+
+    private void createAggregatedZip() throws IOException {
+        String baseDirectory = System.getProperty("user.dir");
+        String firstZipPath = baseDirectory + File.separator + "path_to_first.zip"; // Replace with the actual path
+        String secondZipPath = baseDirectory + File.separator + "path_to_second.zip"; // Replace with the actual path
+        String aggregatedZipPath = baseDirectory + File.separator + "aggregated.zip";
+
+        try (FileOutputStream fos = new FileOutputStream(aggregatedZipPath);
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            addToZipFile(firstZipPath, zos);
+            addToZipFile(secondZipPath, zos);
+        }
+
+        // Optionally, you can delete the original zip files if needed
+        // new File(firstZipPath).delete();
+        // new File(secondZipPath).delete();
+    }
+
+    private void addToZipFile(String file, ZipOutputStream zos) throws IOException {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            ZipEntry zipEntry = new ZipEntry(new File(file).getName());
+            zos.putNextEntry(zipEntry);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                zos.write(buffer, 0, length);
+            }
+
+            zos.closeEntry();
+        }
+    }
+}
+
+
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-thymeleaf</artifactId>
